@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.mytoolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.mytoolbar);
+//        setSupportActionBar(toolbar);
 
         cell_tvs = new ArrayList<TextView>();
         GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
