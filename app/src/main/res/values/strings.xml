@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Minesweeper</string>
+    <string name="flag">🚩</string>
+    <string name="bomb">💣</string>
+    <string name="pick">⛏️</string>
+    <string name="timer">⏰</string>
+    <string name="time">00</string>
+    <string name="flag_count">0</string>
+</resources>
