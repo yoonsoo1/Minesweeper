@@ -1,5 +1,5 @@
 package com.example.minesweeper;
 
 public interface OnClickCell {
-    void OnClickCell(Cell currCell);
+    void cellClick(Cell currCell);
 }

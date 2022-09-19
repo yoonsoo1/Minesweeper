@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/customTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="2sp"
+    android:layout_marginTop="2sp"
+    android:layout_marginEnd="2sp"
+    android:layout_marginBottom="2sp"
+    android:height="32sp"
+    android:width="32sp"
+    android:text="00"
+    android:textSize="24sp"
+    android:textAlignment="center">
+</TextView>
