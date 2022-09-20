@@ -70,8 +70,22 @@ public class MainActivity extends AppCompatActivity {
                     cells.get(i).add(-1);
                 }
                 else {
-                    // Uninitialized cells are -2
-                    cells.get(i).add(-2);
+                    // If not bomb location, check the 3x3 kernel around currLoc
+                    int lowerX = Math.max((i-1), 0);
+                    int upperX = Math.min((i+1), ROW_COUNT-1);
+                    int lowerY = Math.max((j-1), 0);
+                    int upperY = Math.min((j+1), COLUMN_COUNT-1);
+                    int counter = 0;
+                    for(int x = lowerX; x <= upperX; x++) {
+                        for(int y = lowerY; y <= upperY; y++) {
+                            Pair<Integer, Integer> checker = new Pair(x,y);
+                            if(bombs.contains(checker)) {
+                                counter++;
+                            }
+                        }
+                    }
+                    cells.get(i).add(counter);
+                    tv.setText(String.valueOf(counter));
                 }
 
 //                tv.setTextColor(Color.GRAY);
