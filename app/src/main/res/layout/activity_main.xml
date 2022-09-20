@@ -53,11 +53,12 @@
             android:textSize="48sp" />
 
         <TextView
+            android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="14sp"
             android:text="@string/time"
-            android:textSize="48sp" />
+            android:textSize="32sp" />
 
     </LinearLayout>
 

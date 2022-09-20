@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private List<List<Integer>> cells;
     private TextView flagCount;
     private boolean visited[][] = new boolean[ROW_COUNT][COLUMN_COUNT];
-    private int clock = 0;
     private boolean running = false;
 
     private int dpToPixel(int dp) {
@@ -120,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                 cell_tvs.get(i).add(tv);
             }
         }
+        running = true;
+        runTimer();
     }
 
     private void onClickFlag(View view) {
@@ -153,26 +154,26 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-//    private void runTimer() {
-//        final TextView timeView = (TextView) findViewById(R.id.textView);
-//        final Handler handler = new Handler();
-//
-//        handler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                int hours =clock/3600;
-//                int minutes = (clock%3600) / 60;
-//                int seconds = clock%60;
-//                String time = String.format("%d:%02d:%02d", hours, minutes, seconds);
-//                timeView.setText(time);
-//
-//                if (running) {
-//                    clock++;
-//                }
-//                handler.postDelayed(this, 1000);
-//            }
-//        });
-//    }
+    private void runTimer() {
+        final TextView timeView = (TextView) findViewById(R.id.timer);
+        final Handler handler = new Handler();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(time < 10) {
+                    timeView.setText("0" + String.valueOf(time));
+                }
+                else {
+                    timeView.setText(String.valueOf(time));
+                }
+                if (running) {
+                    time++;
+                }
+                handler.postDelayed(this, 1000);
+            }
+        });
+    }
 
     public void onClickTV(View view){
         if(gameOver) {
