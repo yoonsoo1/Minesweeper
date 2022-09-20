@@ -15,7 +15,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,9 +25,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int COLUMN_COUNT = 8;
     private static final int ROW_COUNT = 10;
     private static final int BOMB_COUNT = 4;
+    private int countRevealed = 0; // if this num is == row*col - bomb, end game
     private HashSet<Pair> bombs;
     private List<List<TextView>> cell_tvs;
     private List<List<Integer>> cells;
+    private boolean visited[][] = new boolean[ROW_COUNT][COLUMN_COUNT];
+
 
     private int dpToPixel(int dp) {
         float density = Resources.getSystem().getDisplayMetrics().density;
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     tv.setText(String.valueOf(counter));
                 }
 
-//                tv.setTextColor(Color.GRAY);
+                tv.setTextColor(Color.GRAY);
                 tv.setBackgroundColor(Color.GRAY);
                 tv.setOnClickListener(this::onClickTV);
 
@@ -117,9 +122,9 @@ public class MainActivity extends AppCompatActivity {
         int n = findIndexOfCellTextView(tv);
         int i = n/10 - 1;
         int j = n%10;
-        Pair<Integer, Integer> currLoc = new Pair(i,j);
-        if(bombs.contains(currLoc)) {
-            // It should actually show all bombs and end
+        int currValue = cells.get(i).get(j);
+        if(currValue == -1) {
+            // Show all bombs
             Iterator<Pair> it = bombs.iterator();
             while(it.hasNext()) {
                 Pair<Integer, Integer> coord = it.next();
@@ -128,14 +133,52 @@ public class MainActivity extends AppCompatActivity {
                 TextView bomb = cell_tvs.get(x).get(y);
                 bomb.setText(new String("\uD83D\uDCA3"));
             }
+            // It must end and send to the next page here
         }
-
-        if (tv.getCurrentTextColor() == Color.GREEN) {
-            tv.setTextColor(Color.GRAY);
-            tv.setBackgroundColor(Color.parseColor("lime"));
-        }else {
-            tv.setTextColor(Color.GREEN);
+        else if(currValue == 0) {
+            // If it's 0, expand with BFS until non-zero
+            Queue<Pair> q = new LinkedList<>();
+            visited[i][j] = true;
+            Pair<Integer,Integer> p = new Pair<>(i, j);
+            q.add(p);
+            tv.setTextColor(Color.LTGRAY);
             tv.setBackgroundColor(Color.LTGRAY);
+            TextView currTv;
+            while(q.size() > 0) {
+                p = q.poll();
+                i = p.first;
+                j = p.second;
+                int lowerX = Math.max((i-1), 0);
+                int upperX = Math.min((i+1), ROW_COUNT-1);
+                int lowerY = Math.max((j-1), 0);
+                int upperY = Math.min((j+1), COLUMN_COUNT-1);
+                for(int x = lowerX; x <= upperX; x++) {
+                    for(int y = lowerY; y <= upperY; y++) {
+                        currValue = cells.get(x).get(y);
+                        if(!visited[x][y] && currValue == 0) {
+                            visited[x][y] = true;
+                            q.add(new Pair(x, y));
+                            currTv = cell_tvs.get(x).get(y);
+                            currTv.setTextColor(Color.LTGRAY);
+                            currTv.setBackgroundColor(Color.LTGRAY);
+                            countRevealed++;
+                        }
+                        else if(!visited[x][y] && currValue > 0) {
+                            visited[x][y] = true;
+                            currTv = cell_tvs.get(x).get(y);
+                            currTv.setTextColor(Color.BLACK);
+                            currTv.setBackgroundColor(Color.LTGRAY);
+                            countRevealed++;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            tv.setTextColor(Color.BLACK);
+            tv.setBackgroundColor(Color.LTGRAY);
+            visited[i][j] = true;
+            countRevealed++;
         }
     }
 
