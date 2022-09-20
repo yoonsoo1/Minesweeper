@@ -27,4 +27,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="24sp"
         android:text="Testing Text"/>
+
+    <Button
+        android:id="@+id/returnBtn"
+        android:layout_width="220sp"
+        android:layout_height="60sp"
+        android:layout_marginStart="100sp"
+        android:layout_marginBottom="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="24sp"
+        android:text="Play Again"
+         />
 </androidx.constraintlayout.widget.ConstraintLayout>

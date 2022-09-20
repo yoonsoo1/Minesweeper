@@ -12,6 +12,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.os.Handler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private List<List<Integer>> cells;
     private TextView flagCount;
     private boolean visited[][] = new boolean[ROW_COUNT][COLUMN_COUNT];
-
+    private int clock = 0;
+    private boolean running = false;
 
     private int dpToPixel(int dp) {
         float density = Resources.getSystem().getDisplayMetrics().density;
@@ -150,6 +152,27 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("win", win);
         startActivity(intent);
     }
+
+//    private void runTimer() {
+//        final TextView timeView = (TextView) findViewById(R.id.textView);
+//        final Handler handler = new Handler();
+//
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                int hours =clock/3600;
+//                int minutes = (clock%3600) / 60;
+//                int seconds = clock%60;
+//                String time = String.format("%d:%02d:%02d", hours, minutes, seconds);
+//                timeView.setText(time);
+//
+//                if (running) {
+//                    clock++;
+//                }
+//                handler.postDelayed(this, 1000);
+//            }
+//        });
+//    }
 
     public void onClickTV(View view){
         if(gameOver) {
