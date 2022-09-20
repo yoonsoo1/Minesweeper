@@ -264,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
                 win = true;
                 gameOver = true;
             }
-            System.out.println("countRevealed: " + String.valueOf(countRevealed));
         }
     }
 }
