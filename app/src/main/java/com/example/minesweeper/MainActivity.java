@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int COLUMN_COUNT = 8;
     private static final int ROW_COUNT = 10;
     private static final int BOMB_COUNT = 4;
+    private int flagCounter = 4;
     private int countRevealed = 0; // if this num is == row*col - bomb, end game
     private HashSet<Pair> bombs;
     private List<List<TextView>> cell_tvs;
@@ -41,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TextView option = findViewById(R.id.flagOpt);
+        option.setOnClickListener(this::onClickFlag);
+
+        TextView flagCount = findViewById(R.id.flagCount);
+        flagCount.setText(String.valueOf(flagCounter));
+
         cell_tvs = new ArrayList<>(ROW_COUNT);
         cells = new ArrayList<>(ROW_COUNT);
         for(int i = 0; i < ROW_COUNT; i++) {
@@ -106,6 +114,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void onClickFlag(View view) {
+        TextView currState = (TextView) view;
+        String currLogo = (String) currState.getText();
+        if(currLogo == getString(R.string.pick)) {
+            currState.setText(R.string.flag);
+        }
+        else {
+            currState.setText(R.string.pick);
+        }
+    }
+
     private int findIndexOfCellTextView(TextView tv) {
         for(int i = 0; i < ROW_COUNT; i++) {
             for(int j = 0; j < COLUMN_COUNT; j++) {
@@ -131,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 int x = coord.first;
                 int y = coord.second;
                 TextView bomb = cell_tvs.get(x).get(y);
-                bomb.setText(new String("\uD83D\uDCA3"));
+                bomb.setText(R.string.bomb);
             }
             // It must end and send to the next page here
         }
