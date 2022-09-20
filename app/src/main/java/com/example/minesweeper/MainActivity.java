@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                     // If it's 0, expand with BFS until non-zero
                     Queue<Pair> q = new LinkedList<>();
                     visited[i][j] = true;
+                    countRevealed++;
                     Pair<Integer,Integer> p = new Pair<>(i, j);
                     q.add(p);
                     tv.setTextColor(Color.LTGRAY);
@@ -226,14 +227,16 @@ public class MainActivity extends AppCompatActivity {
                     flagCounter++;
                     int replaceVal = cells.get(i).get(j);
                     tv.setText(String.valueOf(replaceVal));
+                    countRevealed--;
                 }
                 else if(!visited[i][j] && flagCounter > 0) {
                     flagCounter--;
                     tv.setText(R.string.flag);
+                    countRevealed++;
                 }
                 flagCount.setText(String.valueOf(flagCounter));
             }
-            if(countRevealed+flagCounter == ROW_COUNT*COLUMN_COUNT-BOMB_COUNT) {
+            if(countRevealed == ROW_COUNT*COLUMN_COUNT-BOMB_COUNT) {
                 win = true;
                 gameOver = true;
             }
