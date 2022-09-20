@@ -26,10 +26,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int ROW_COUNT = 10;
     private static final int BOMB_COUNT = 4;
     private int flagCounter = 4;
+    private boolean isPick = true;
     private int countRevealed = 0; // if this num is == row*col - bomb, end game
     private HashSet<Pair> bombs;
     private List<List<TextView>> cell_tvs;
     private List<List<Integer>> cells;
+    private TextView flagCount;
     private boolean visited[][] = new boolean[ROW_COUNT][COLUMN_COUNT];
 
 
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         TextView option = findViewById(R.id.flagOpt);
         option.setOnClickListener(this::onClickFlag);
 
-        TextView flagCount = findViewById(R.id.flagCount);
+        flagCount = findViewById(R.id.flagCount);
         flagCount.setText(String.valueOf(flagCounter));
 
         cell_tvs = new ArrayList<>(ROW_COUNT);
@@ -119,9 +121,11 @@ public class MainActivity extends AppCompatActivity {
         String currLogo = (String) currState.getText();
         if(currLogo == getString(R.string.pick)) {
             currState.setText(R.string.flag);
+            isPick = false;
         }
         else {
             currState.setText(R.string.pick);
+            isPick = true;
         }
     }
 
@@ -141,63 +145,78 @@ public class MainActivity extends AppCompatActivity {
         int n = findIndexOfCellTextView(tv);
         int i = n/10 - 1;
         int j = n%10;
-        int currValue = cells.get(i).get(j);
-        if(currValue == -1) {
-            // Show all bombs
-            Iterator<Pair> it = bombs.iterator();
-            while(it.hasNext()) {
-                Pair<Integer, Integer> coord = it.next();
-                int x = coord.first;
-                int y = coord.second;
-                TextView bomb = cell_tvs.get(x).get(y);
-                bomb.setText(R.string.bomb);
+        if(isPick) {
+            int currValue = cells.get(i).get(j);
+            if(currValue == -1) {
+                // Show all bombs
+                Iterator<Pair> it = bombs.iterator();
+                while(it.hasNext()) {
+                    Pair<Integer, Integer> coord = it.next();
+                    int x = coord.first;
+                    int y = coord.second;
+                    TextView bomb = cell_tvs.get(x).get(y);
+                    bomb.setText(R.string.bomb);
+                }
+                // It must end and send to the next page here
             }
-            // It must end and send to the next page here
-        }
-        else if(currValue == 0) {
-            // If it's 0, expand with BFS until non-zero
-            Queue<Pair> q = new LinkedList<>();
-            visited[i][j] = true;
-            Pair<Integer,Integer> p = new Pair<>(i, j);
-            q.add(p);
-            tv.setTextColor(Color.LTGRAY);
-            tv.setBackgroundColor(Color.LTGRAY);
-            TextView currTv;
-            while(q.size() > 0) {
-                p = q.poll();
-                i = p.first;
-                j = p.second;
-                int lowerX = Math.max((i-1), 0);
-                int upperX = Math.min((i+1), ROW_COUNT-1);
-                int lowerY = Math.max((j-1), 0);
-                int upperY = Math.min((j+1), COLUMN_COUNT-1);
-                for(int x = lowerX; x <= upperX; x++) {
-                    for(int y = lowerY; y <= upperY; y++) {
-                        currValue = cells.get(x).get(y);
-                        if(!visited[x][y] && currValue == 0) {
-                            visited[x][y] = true;
-                            q.add(new Pair(x, y));
-                            currTv = cell_tvs.get(x).get(y);
-                            currTv.setTextColor(Color.LTGRAY);
-                            currTv.setBackgroundColor(Color.LTGRAY);
-                            countRevealed++;
-                        }
-                        else if(!visited[x][y] && currValue > 0) {
-                            visited[x][y] = true;
-                            currTv = cell_tvs.get(x).get(y);
-                            currTv.setTextColor(Color.BLACK);
-                            currTv.setBackgroundColor(Color.LTGRAY);
-                            countRevealed++;
+            else if(currValue == 0) {
+                // If it's 0, expand with BFS until non-zero
+                Queue<Pair> q = new LinkedList<>();
+                visited[i][j] = true;
+                Pair<Integer,Integer> p = new Pair<>(i, j);
+                q.add(p);
+                tv.setTextColor(Color.LTGRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+                TextView currTv;
+                while(q.size() > 0) {
+                    p = q.poll();
+                    i = p.first;
+                    j = p.second;
+                    int lowerX = Math.max((i-1), 0);
+                    int upperX = Math.min((i+1), ROW_COUNT-1);
+                    int lowerY = Math.max((j-1), 0);
+                    int upperY = Math.min((j+1), COLUMN_COUNT-1);
+                    for(int x = lowerX; x <= upperX; x++) {
+                        for(int y = lowerY; y <= upperY; y++) {
+                            currValue = cells.get(x).get(y);
+                            if(!visited[x][y] && currValue == 0) {
+                                visited[x][y] = true;
+                                q.add(new Pair(x, y));
+                                currTv = cell_tvs.get(x).get(y);
+                                currTv.setTextColor(Color.LTGRAY);
+                                currTv.setBackgroundColor(Color.LTGRAY);
+                                countRevealed++;
+                            }
+                            else if(!visited[x][y] && currValue > 0) {
+                                visited[x][y] = true;
+                                currTv = cell_tvs.get(x).get(y);
+                                currTv.setTextColor(Color.BLACK);
+                                currTv.setBackgroundColor(Color.LTGRAY);
+                                countRevealed++;
+                            }
                         }
                     }
                 }
             }
+            else {
+                tv.setTextColor(Color.BLACK);
+                tv.setBackgroundColor(Color.LTGRAY);
+                visited[i][j] = true;
+                countRevealed++;
+            }
         }
         else {
-            tv.setTextColor(Color.BLACK);
-            tv.setBackgroundColor(Color.LTGRAY);
-            visited[i][j] = true;
-            countRevealed++;
+            String currState = (String) tv.getText();
+            if(currState == getString(R.string.flag)) {
+                flagCounter++;
+                int replaceVal = cells.get(i).get(j);
+                tv.setText(String.valueOf(replaceVal));
+            }
+            else if(!visited[i][j] && flagCounter > 0) {
+                flagCounter--;
+                tv.setText(R.string.flag);
+            }
+            flagCount.setText(String.valueOf(flagCounter));
         }
     }
 
