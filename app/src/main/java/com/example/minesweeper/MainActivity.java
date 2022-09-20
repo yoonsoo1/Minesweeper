@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     gameOver = true;
                 }
-                else if(currValue == 0) {
+                else if(currValue == 0 && !visited[i][j]) {
                     // If it's 0, expand with BFS until non-zero
                     Queue<Pair> q = new LinkedList<>();
                     visited[i][j] = true;
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-                else {
+                else if(currValue > 0 && !visited[i][j]){
                     tv.setTextColor(Color.BLACK);
                     tv.setBackgroundColor(Color.LTGRAY);
                     visited[i][j] = true;
@@ -251,19 +251,20 @@ public class MainActivity extends AppCompatActivity {
                     flagCounter++;
                     int replaceVal = cells.get(i).get(j);
                     tv.setText(String.valueOf(replaceVal));
-                    countRevealed--;
+
                 }
                 else if(!visited[i][j] && flagCounter > 0) {
                     flagCounter--;
                     tv.setText(R.string.flag);
-                    countRevealed++;
+
                 }
                 flagCount.setText(String.valueOf(flagCounter));
             }
-            if(countRevealed == ROW_COUNT*COLUMN_COUNT-BOMB_COUNT) {
+            if(countRevealed >= ROW_COUNT*COLUMN_COUNT-BOMB_COUNT) {
                 win = true;
                 gameOver = true;
             }
+            System.out.println("countRevealed: " + String.valueOf(countRevealed));
         }
     }
 }
